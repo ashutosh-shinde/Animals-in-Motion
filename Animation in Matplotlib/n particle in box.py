@@ -12,9 +12,9 @@ interval = 10  # Each time step is animated every 10 milliseconds
 def v_func(vx, vy, t):
     # Example: Velocity function of time -- customize freely
     # Add some random noise to the x-velocity
-    vx = vx + np.sin(np.exp(t)) + 0.5 * random.random() - 0.25
+    vx = vx + random.uniform(-1, 1)
     # Add some random noise to the y-velocity
-    vy = vy + np.cos(np.exp(t)) + 0.5 * random.random() - 0.25
+    vy = vy + random.uniform(-1, 1)
     return vx, vy
 
 
@@ -26,8 +26,8 @@ class Particle:
         self.vx = 1.0
         self.vy = 1.0
 
-    # This function updates the position of the particle based 
-    # On its velocity and time step.    
+    # This function updates the position of the particle based
+    # On its velocity and time step.
     def step(self, dt):
         self.vx, self.vy = v_func(self.vx, self.vy, self.t)
         self.x += self.vx * dt
@@ -57,8 +57,20 @@ class Particle:
 
 
 # Create a list of particles with initial positions.
-particles = [Particle(x=500, y=500),
-             Particle(x=500, y=500), Particle(x=800, y=200)]
+# particles = [Particle(x=500, y=500),
+#             Particle(x=500, y=500), Particle(x=800, y=200)]
+
+
+def particles_list(n):
+    p = []
+    for _ in range(n):
+        particle = Particle(x=np.random.randint(0, 1000),
+                            y=np.random.randint(0, 1000))
+        p.append(particle)
+    return p
+
+
+particles = particles_list(10)  # set number of particles here.
 
 # Set base plot and axis limits.
 fig, ax = plt.subplots()
@@ -66,20 +78,20 @@ ax.set_xlim(0, BOX)
 ax.set_ylim(0, BOX)
 ax.set_aspect('equal')
 
-colors = ['ro', 'bo', 'go']
 
 # Create a list of points for each particle with different colors
 # Here elements of list-points are objects of type Line2D. But note that
-# ax.plot() returns a list of Line2D objects, we need to extract the first 
-# Element of that list to get the Line2D object for each particle. 
+# ax.plot() returns a list of Line2D objects, we need to extract the first
+# Element of that list to get the Line2D object for each particle.
 # Hence we use [0] at the end of ax.plot().
-points = [ax.plot([], [], c, markersize=5)[0] for c, _ in
-          zip(colors, particles)]
+# Generate a unique random color for every single particle
+points = [ax.plot([], [], 'o', color=np.random.rand(3),
+                  markersize=5)[0] for _ in particles]
 
 
 # frame is just a counter that goes from 0 to frames-1.
-# frame is not a subplot layer. and following fuction does not plot 
-# any new graph or even points. 
+# frame is not a subplot layer. and following fuction does not plot
+# any new graph or even points.
 # It just update the position of the existing points in the plot.
 # particle <- variable. point <- Line2D object that we see on the plot.
 def update(frame):
