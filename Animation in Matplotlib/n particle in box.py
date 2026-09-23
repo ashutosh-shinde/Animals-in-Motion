@@ -110,3 +110,6 @@ def update(frame):
 ani = animation.FuncAnimation(
     fig, update, frames=frames, interval=interval, blit=True)
 plt.show()  # Display the animation.
+ani.save('n_particles.gif', writer='pillow')
+
+print("done")
